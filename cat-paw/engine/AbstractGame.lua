@@ -20,7 +20,7 @@ function AbstractGame:initialize(title, targetWindowW, targetWindowH)
 		love.window.setMode(targetWindowW, targetWindowH)
 	else
 		error(string.format("Invalid window size. w/h must both be -1, for fullscreen,"
-		.. "or positive. Current size: " .. targetWindowW .. ", " .. targetWindowH))
+		.. "or positive. Current size: " .. tostring(targetWindowW) .. ", " .. tostring(targetWindowH)))
 	end
 	self.windowW, self.windowH = love.window.getMode()
 	self:_printToolVersions()

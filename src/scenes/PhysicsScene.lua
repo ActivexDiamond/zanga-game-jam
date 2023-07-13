@@ -3,7 +3,7 @@ local State = require "cat-paw.core.patterns.state.State"
 local utils = require "libs.utils"
 local bump = require "libs.bump"
 
-local PhysicsObject = require "core.PhysicsObject"
+local WorldObject = require "core.WorldObject"
 
 local Event = require "cat-paw.core.patterns.event.Event"
 local EvSceneObjectAdd = require "events.EvSceneObjectAdd"
@@ -12,8 +12,8 @@ local EvSceneObjectRemove = require "events.EvSceneObjectRemove"
 ------------------------------ Helpers ------------------------------
 
 ------------------------------ Constructor ------------------------------
-local Scene = middleclass("Scene", State)
-function Scene:initialize()
+local PhysicsScene = middleclass("PhysicsScene", State)
+function PhysicsScene:initialize()
 	State.initialize(self)
 	--GAME:getEventSystem():attach(self, {Event})
 	self.objects = {}
@@ -25,7 +25,7 @@ end
 ------------------------------ Core API ------------------------------
 local function defaultCollisionFilter() return "cross" end
 
-function Scene:update(dt)
+function PhysicsScene:update(dt)
 	State.update(self, dt)
 	
 	for obj, _ in pairs(self.objects) do
@@ -33,7 +33,7 @@ function Scene:update(dt)
 	end
 	
 	for k, obj in ipairs(self.bumpWorld:getItems()) do
-		local targetPos = obj.pos + obj.vel * dt
+		local targetPos = obj.position + obj.velocity * dt
 		local x, y, cols, len = self.bumpWorld:move(obj, targetPos.x, targetPos.y, 
 				obj.collisionFilter or defaultCollisionFilter)
 		obj:setPosition(x, y)
@@ -47,7 +47,7 @@ function Scene:update(dt)
 	self:_processQueuedObjects()
 end
 
-function Scene:draw(g2d)
+function PhysicsScene:draw(g2d)
 	State.draw(self, g2d)
 --	local depthSorted = self.bumpWorld:getItems()
 --	table.sort(depthSorted, function(a, b)
@@ -62,28 +62,28 @@ function Scene:draw(g2d)
 end
 
 ------------------------------ API ------------------------------
-function Scene:enter(from, ...)
+function PhysicsScene:enter(from, ...)
 	State.enter(self, from, ...)
 	for obj, _ in pairs(self.objects) do
 		if obj.onSceneEnter then obj:onSceneEnter(from, ...) end
 	end
 end
 
-function Scene:leave(to)
+function PhysicsScene:leave(to)
 	State.leave(self, to)
 	for obj, _ in pairs(self.objects) do
 		if obj.onSceneLeave then obj:onSceneLeave(to) end
 	end
 end
 
-function Scene:activate(fsm)
+function PhysicsScene:activate(fsm)
 	State.activate(self, fsm)
 	for obj, _ in pairs(self.objects) do
 		if obj.onSceneActivate then obj:onSceneActivate(fsm) end
 	end
 end
 
-function Scene:destroy()
+function PhysicsScene:destroy()
 	State.destroy(self)
 	for obj, _ in pairs(self.objects) do
 		if obj.onSceneDestroy then obj:onSceneDestroy() end
@@ -91,16 +91,16 @@ function Scene:destroy()
 end
 
 ------------------------------ Object API ------------------------------
-function Scene:addObject(obj)
+function PhysicsScene:addObject(obj)
 	self.objectsToAdd[obj] = true
 end
 
-function Scene:removeObject(obj)
+function PhysicsScene:removeObject(obj)
 	self.objectsToRemove[obj] = true
 end
 
 ------------------------------ Internals ------------------------------
-function Scene:_processQueuedObjects()
+function PhysicsScene:_processQueuedObjects()
 	for obj, _ in pairs(self.objectsToRemove) do
 		if not self.objects[obj] then goto continue end
 		self.objects[obj] = nil
@@ -115,8 +115,8 @@ function Scene:_processQueuedObjects()
 
 	for obj, _ in pairs(self.objectsToAdd) do
 		self.objects[obj] = true
-		if obj:isInstanceOf(PhysicsObject) then
-			self.bumpWorld:add(obj, obj.pos.x, obj.pos.y, obj.w, obj.h)
+		if obj:isInstanceOf(WorldObject) then
+			self.bumpWorld:add(obj, obj.position.x, obj.position.y, obj.w, obj.h)
 		end
 		GAME:getEventSystem():queue(EvSceneObjectAdd(self, obj))
 	end
@@ -125,12 +125,12 @@ end
 
 ------------------------------ Getters / Setters ------------------------------
 -- Returns a direct reference to its internal buffer. Changes will be reflected!
-function Scene:getObjects() return self.bumpWorld:getItems() end
+function PhysicsScene:getObjects() return self.bumpWorld:getItems() end
 
 -- `protection` Just in case someone confuses this with `removeObject`.
 -- Note calling this will also invalidate any reference to the buffer previously
 -- gotten through `getObjects()`
-function Scene:clearObjects(protection)
+function PhysicsScene:clearObjects(protection)
 	if protection then
 		error("You seem to have passed something. Did you mean to call `Scene:removeObject(obj`)?"
 				.. "\nCareful, this clears the entire object buffer!")
@@ -139,4 +139,4 @@ function Scene:clearObjects(protection)
 	self.bumpWorld = bump.newWorld(32)
 end
 
-return Scene
+return PhysicsScene

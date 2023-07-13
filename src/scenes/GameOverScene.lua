@@ -1,5 +1,5 @@
 local middleclass = require "libs.middleclass"
-local Scene = require "scenes.Scene"
+local PhysicsScene = require "scenes.PhysicsScene"
 
 local EventSystem = require "cat-paw.core.patterns.event.EventSystem"
 local EvKeyPress = require "cat-paw.core.patterns.event.keyboard.EvKeyPress"
@@ -7,15 +7,15 @@ local EvKeyPress = require "cat-paw.core.patterns.event.keyboard.EvKeyPress"
 ------------------------------ Helpers ------------------------------
 
 ------------------------------ Constructor ------------------------------
-local GameOverScene = middleclass("GameOverScreen", Scene)
+local GameOverScene = middleclass("GameOverScreen", PhysicsScene)
 function GameOverScene:initialize(...)
-    Scene.initialize(self, ...)
+    PhysicsScene.initialize(self, ...)
     GAME:getEventSystem():attach(self, EventSystem.ATTACH_TO_ALL)
 end
 
 ------------------------------ Core API ------------------------------
 function GameOverScene:draw(g2d)
-    Scene.draw(self, g2d)
+    PhysicsScene.draw(self, g2d)
 
     g2d.push()
     g2d.scale(2)

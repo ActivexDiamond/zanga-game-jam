@@ -1,23 +1,27 @@
 local middleclass = require "libs.middleclass"
-local brinevector = require "libs.brinevector"
 
-local Scene = require "scenes.Scene"
+local PhysicsScene = require "scenes.PhysicsScene"
 
 local EventSystem = require "cat-paw.core.patterns.event.EventSystem"
 local EvKeyPress = require "cat-paw.core.patterns.event.keyboard.EvKeyPress"
 
+local Wizard = require "entities.Wizard"
+
 ------------------------------ Helpers ------------------------------
 
 ------------------------------ Constructor ------------------------------
-local InGameScene = middleclass("InGameScene", Scene)
+local InGameScene = middleclass("InGameScene", PhysicsScene)
 function InGameScene:initialize(...)
-	Scene.initialize(self, ...)
+	PhysicsScene.initialize(self, ...)
 	GAME:getEventSystem():attach(self, EventSystem.ATTACH_TO_ALL)
+	
+	self.WIZARD = Wizard(self, 200, 200)
+	self:addObject(self.WIZARD)
 end
 
 ------------------------------ Core API ------------------------------
 function InGameScene:enter(from, ...)
-	Scene.enter(self, from, ...)
+	PhysicsScene.enter(self, from, ...)
 	print("At MainMenuScene.")
 end
 

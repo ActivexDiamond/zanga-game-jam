@@ -3,7 +3,7 @@ local Object = require "core.Object"
 
 local AssetRegistry = require "core.AssetRegistry"
 
-local brinevector = require "libs.brinevector"
+local Vector = require "libs.Vector"
 
 ------------------------------ Helpers ------------------------------
 
@@ -12,9 +12,9 @@ local WorldObject = middleclass("WorldObject", Object)
 function WorldObject:initialize(id, scene, x, y)
 	Object.initialize(self, id)
 	self.scene = scene
-	self.position = brinevector(x, y)
+	self.position = Vector(x, y)
 	
-	self.velocity = brinevector(0, 0)
+	self.velocity = Vector(0, 0)
 	self.currentFrame = 0
 	self.rotation = 0
 	self.spriteOffset = {x = 0, y = 0}
@@ -77,7 +77,7 @@ function WorldObject:getRotation() return self.rotation end
 --function WorldObject:getSpriteOffset() return self.spriteOffset end
 
 function WorldObject:getCenter()
-	return brinevector(self.position.x + self.w / 2, 
+	return Vector(self.position.x + self.w / 2, 
 			self.position.y + self.h / 2)
 end
 function WorldObject:getBoundingBox()

@@ -10,8 +10,8 @@ local InGameScene = require "scenes.InGameScene"
 
 ------------------------------ Constructor ------------------------------
 local Game = middleclass("Game", AbstractGame)
-function Game:initialize(seed, ...)
-	AbstractGame.initialize(self, ...)
+function Game:initialize(title, targetWindowW, targetWindowH, seed)
+	AbstractGame.initialize(self, title, targetWindowW, targetWindowH)
 	self.SEED = seed or os.time()
 	math.randomseed(self.SEED)
 	self:_loadAllAssets()
@@ -20,8 +20,8 @@ function Game:initialize(seed, ...)
 	self:add(Game.MAIN_MENU_SCENE_ID, MainMenuScene())
 	self:add(Game.IN_GAME_SCENE_ID, InGameScene())
 	
-	self:goTo(Game.MAIN_MENU_SCENE_ID)
-	--self:goTo(Game.IN_GAME_SCENE_ID)
+--	self:goTo(Game.MAIN_MENU_SCENE_ID)
+	self:goTo(Game.IN_GAME_SCENE_ID)
 end
 
 ------------------------------ Constants ------------------------------
@@ -29,18 +29,14 @@ Game.MAIN_MENU_SCENE_ID = 0
 Game.IN_GAME_SCENE_ID = 1
 
 ------------------------------ Core API ------------------------------
---[[
 function Game:update(dt)
 	AbstractGame.update(self, dt)
-	shack:update(dt)
 end
 
 function Game:draw()
 	local g2d = love.graphics
-	shack:apply()
 	AbstractGame.draw(self, g2d)
 end
---]]
 ------------------------------ Internals ------------------------------
 function AbstractGame:_loadAllAssets()
 	local tAll, tData, tInv, tObj, tGui
