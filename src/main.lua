@@ -13,6 +13,9 @@ print("CatPaw:", version)
 ------------------------------ Globals ------------------------------
 DEBUG = {
 	ALLOW_QUICK_EXIT = true,
+	ALLOW_MOVEMENT = true,
+	DEV_MODE = true,
+	DRAW_LEVEL_OUTLINE = true,
 }
 
 ------------------------------ Begin Execution ------------------------------

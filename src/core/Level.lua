@@ -2,6 +2,7 @@ local middleclass = require "libs.middleclass"
 
 local DataRegistry = require "core.DataRegistry"
 
+local SignManager = require "entities.SignManager"
 local Wizard = require "entities.Wizard"
 local Goal = require "entities.Goal"
 local Block = require "entities.Block"
@@ -45,6 +46,7 @@ function Level.static:loadLevel(scene, levelId)
 	level.name = metadata.name
 	level.validSkills = metadata.validSkills
 	level.objects = Level:_objectsFromPng(scene, mapPng)
+	level.signManager = SignManager(scene, metadata.signs)
 	level.w, level.h = mapPng:getDimensions()
 	return level
 end

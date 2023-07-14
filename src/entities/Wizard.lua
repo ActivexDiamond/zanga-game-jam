@@ -14,7 +14,6 @@ end
 
 local function deflect(prj, other, info)
 	local n = Vector(info.normal.x, info.normal.y).angle
-		print(info.normal.x, info.normal.y, n, prj.direction.angle)
 	if info.normal.x == -1 then	
 		prj.direction.angle = n - prj.direction.angle
 	elseif info.normal.y == -1 then
@@ -38,24 +37,34 @@ local FILTERS = {
 local Wizard = middleclass("Wizard", WorldObject)
 function Wizard:initialize(scene, x, y)
 	WorldObject.initialize(self, "wizard", scene, x, y)
+	print("Spawned wizard at: ", self.position)
 end
 
 ------------------------------ Core API ------------------------------
 function Wizard:update(dt)
 	WorldObject.update(self, dt)
 	local isDown = love.keyboard.isDown 
-
-	local dirX, dirY = 0, 0
-	if isDown('w') then dirY = dirY - 1 end
-	if isDown('s') then dirY = dirY + 1 end
-	if isDown('d') then dirX = dirX + 1 end
-	if isDown('a') then dirX = dirX - 1 end
-	self.velocity = Vector(dirX * self.speed, dirY * self.speed) 
+	if DEBUG.ALLOW_MOVEMENT or self.scene.levelId == "level_win" then
+		local dirX, dirY = 0, 0
+		if isDown('w') then dirY = dirY - 1 end
+		if isDown('s') then dirY = dirY + 1 end
+		if isDown('d') then dirX = dirX + 1 end
+		if isDown('a') then dirX = dirX - 1 end
+		self.velocity = Vector(dirX * self.speed, dirY * self.speed)
+	end 
 end
 
 
 function Wizard:draw(g2d)
 	WorldObject.draw(self, g2d)
+end
+
+------------------------------ Physics ------------------------------
+function Wizard:collisionFilter(other)
+	if other.ID == "projectile" then
+		return nil
+	end
+	return 'slide'
 end
 
 ------------------------------ Internals ------------------------------

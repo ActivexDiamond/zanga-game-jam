@@ -17,13 +17,15 @@ function Goal:update(dt)
 end
 ------------------------------ Physics ------------------------------
 function Goal:collisionFilter(other)
-	print(other.ID)
 	return other.ID == "projectile" and 'touch' or nil
 end
 
 function Goal:onCollision(other, info)
 	--Other should always be "projectile" due to the filter, but just to be safe.
-	if other.ID == "projectile" then self.complete = true end
+	if other.ID == "projectile" then
+		print("Level complete! Moving on...") 
+		self.complete = true
+	end
 end
 
 
