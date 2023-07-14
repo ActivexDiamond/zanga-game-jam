@@ -1,32 +1,44 @@
 local middleclass = require "libs.middleclass"
+local push = require "libs.push"
 
 local AbstractGame = require "cat-paw.engine.AbstractGame"
 
 local MainMenuScene = require "scenes.MainMenuScene"
 local InGameScene = require "scenes.InGameScene"
 
+local EvWindowResize = require "cat-paw.core.patterns.event.os.EvWindowResize"
 --local shack = require "libs.shack"
-
 
 ------------------------------ Constructor ------------------------------
 local Game = middleclass("Game", AbstractGame)
-function Game:initialize(title, targetWindowW, targetWindowH, seed)
+function Game:initialize(title, targetWindowW, targetWindowH, gameW, gameH, seed)
 	AbstractGame.initialize(self, title, targetWindowW, targetWindowH)
+	self.gameW = gameW or self.targetWindowW
+	self.gameH = gameH or self.targetWindowH
 	self.SEED = seed or os.time()
 	math.randomseed(self.SEED)
 	self:_loadAllAssets()
+	
+	push:setupScreen(self.windowW, self.windowH, self.gameW, self.gameH, {
+			fullscreen = targetWindowW == -1,
+			resizable = true
+	})
+	self.eventSystem:attach(self, EvWindowResize)
+	
 	
 	GAME = self
 	self:add(Game.MAIN_MENU_SCENE_ID, MainMenuScene())
 	self:add(Game.IN_GAME_SCENE_ID, InGameScene())
 	
 --	self:goTo(Game.MAIN_MENU_SCENE_ID)
-	self:goTo(Game.IN_GAME_SCENE_ID)
+	self:goTo(Game.IN_GAME_SCENE_ID, "level1")
 end
 
 ------------------------------ Constants ------------------------------
 Game.MAIN_MENU_SCENE_ID = 0
 Game.IN_GAME_SCENE_ID = 1
+
+Game.GRID_SIZE = 32
 
 ------------------------------ Core API ------------------------------
 function Game:update(dt)
@@ -35,7 +47,9 @@ end
 
 function Game:draw()
 	local g2d = love.graphics
+	push:start()
 	AbstractGame.draw(self, g2d)
+	push:finish()
 end
 ------------------------------ Internals ------------------------------
 function AbstractGame:_loadAllAssets()
@@ -72,6 +86,9 @@ local str = string.format([[
 	print(str)
 end
 
------------------------------- Getters / Setters ------------------------------
+------------------------------ Callbacks ------------------------------
+Game[EvWindowResize] = function(self, e)
+	push:resize(e.w, e.h)
+end
 
 return Game

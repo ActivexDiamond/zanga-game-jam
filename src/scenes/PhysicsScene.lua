@@ -137,6 +137,10 @@ function PhysicsScene:clearObjects(protection)
 	end
 
 	self.bumpWorld = bump.newWorld(32)
+	self.objects = {}
+	self.bumpWorld = bump.newWorld()
+	self.objectsToAdd = {}
+	self.objectsToRemove = {}
 end
 
 return PhysicsScene
