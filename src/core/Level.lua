@@ -57,7 +57,6 @@ function Level.static:_objectsFromPng(scene, mapPng)
 	for x = 0, w - 1 do
 		for y = 0, h - 1 do
 			local color = rgbToHex(mapPng:getPixel(x, y))
-			print(color)
 			assert(LEGEND[color], "Invalid tile found in map. Double check tile at:" ..
 					x .. ", " .. y)
 			t[#t + 1] = LEGEND[color](scene, x * GAME.GRID_SIZE, y * GAME.GRID_SIZE)

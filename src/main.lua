@@ -21,8 +21,6 @@ local Game = require "core.Game"
 local GAME_NAME = "Spellcaster"
 local TARGET_WINDOW_W = 1080
 local TARGET_WINDOW_H = 720
-local GAME_W = 32 * 50
-local GAME_H = 32 * 30
 
-Game(GAME_NAME, TARGET_WINDOW_W, TARGET_WINDOW_H, GAME_W, GAME_H)
+Game(GAME_NAME, TARGET_WINDOW_W, TARGET_WINDOW_H)
 

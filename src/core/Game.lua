@@ -1,5 +1,4 @@
 local middleclass = require "libs.middleclass"
-local push = require "libs.push"
 
 local AbstractGame = require "cat-paw.engine.AbstractGame"
 
@@ -11,20 +10,11 @@ local EvWindowResize = require "cat-paw.core.patterns.event.os.EvWindowResize"
 
 ------------------------------ Constructor ------------------------------
 local Game = middleclass("Game", AbstractGame)
-function Game:initialize(title, targetWindowW, targetWindowH, gameW, gameH, seed)
+function Game:initialize(title, targetWindowW, targetWindowH, seed)
 	AbstractGame.initialize(self, title, targetWindowW, targetWindowH)
-	self.gameW = gameW or self.targetWindowW
-	self.gameH = gameH or self.targetWindowH
 	self.SEED = seed or os.time()
 	math.randomseed(self.SEED)
 	self:_loadAllAssets()
-	
-	push:setupScreen(self.windowW, self.windowH, self.gameW, self.gameH, {
-			fullscreen = targetWindowW == -1,
-			resizable = true
-	})
-	self.eventSystem:attach(self, EvWindowResize)
-	
 	
 	GAME = self
 	self:add(Game.MAIN_MENU_SCENE_ID, MainMenuScene())
@@ -32,6 +22,7 @@ function Game:initialize(title, targetWindowW, targetWindowH, gameW, gameH, seed
 	
 --	self:goTo(Game.MAIN_MENU_SCENE_ID)
 	self:goTo(Game.IN_GAME_SCENE_ID, "level1")
+	
 end
 
 ------------------------------ Constants ------------------------------
@@ -47,9 +38,7 @@ end
 
 function Game:draw()
 	local g2d = love.graphics
-	push:start()
 	AbstractGame.draw(self, g2d)
-	push:finish()
 end
 ------------------------------ Internals ------------------------------
 function AbstractGame:_loadAllAssets()
@@ -84,11 +73,6 @@ local str = string.format([[
 ------------------------------------------------------------
 	]], tData*1e3, tInv*1e3, tObj*1e3, tGui*1e3, tAll)
 	print(str)
-end
-
------------------------------- Callbacks ------------------------------
-Game[EvWindowResize] = function(self, e)
-	push:resize(e.w, e.h)
 end
 
 return Game

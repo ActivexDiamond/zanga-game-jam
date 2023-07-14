@@ -3,7 +3,36 @@ local WorldObject = require "core.WorldObject"
 
 local Vector = require "libs.Vector"
 
------------------------------- Helpers ------------------------------
+local EvMousePress = require "cat-paw.core.patterns.event.mouse.EvMousePress"
+
+local Projectile = require "entities.Projectile"
+
+------------------------------ Skills ------------------------------
+local function destroy(prj, other, info)
+	prj.scene:removeObject(other)
+end
+
+local function deflect(prj, other, info)
+	local n = Vector(info.normal.x, info.normal.y).angle
+		print(info.normal.x, info.normal.y, n, prj.direction.angle)
+	if info.normal.x == -1 then	
+		prj.direction.angle = n - prj.direction.angle
+	elseif info.normal.y == -1 then
+		prj.direction.angle = n - prj.direction.angle + math.pi/2
+	else	--If normal.x==1 or normal.y==1 
+		prj.direction.angle = n + (n - prj.direction.angle) + math.pi
+	end
+end
+
+local function SKILL(prj, other)
+
+end
+
+--The collision filter for each skill.
+local FILTERS = {
+	[destroy] = "cross",
+	[deflect] = "slide",
+}
 
 ------------------------------ Constructor ------------------------------
 local Wizard = middleclass("Wizard", WorldObject)
@@ -29,8 +58,44 @@ function Wizard:draw(g2d)
 	WorldObject.draw(self, g2d)
 end
 
------------------------------- API ------------------------------
+------------------------------ Internals ------------------------------
+function Wizard:_spawnProjectile(towards)
+	local pos = self:getCenter()
+	local dir = (towards - pos).normalized
+	self.scene:addObject(Projectile(self.scene, pos.x, pos.y, dir,
+			self:_getProjectileOpt()))	
+end
 
+function Wizard:_getProjectileOpt()
+	local t = {
+		speed = self.projectileSpeed,
+		rules = {
+			--object_id = callback for skill
+			wood_tile = deflect,
+			stone_tile = destroy,
+		}
+	}
+	
+	t.filters = {}
+	for id, skill in pairs(t.rules) do
+		t.filters[id] = FILTERS[skill]
+	end
+	
+	return t
+end
+------------------------------ Callbacks ------------------------------
+Wizard[EvMousePress] = function(self, e)
+	if e.button == 1 then
+		--Account for translate needed to center the level.
+		--TODO: Just use cameras!
+		local SW, SH = love.window.getMode()
+		local xOff = (SW - GAME.GRID_SIZE * self.scene.currentLevel.w) / 2
+		local yOff = (SH - GAME.GRID_SIZE * self.scene.currentLevel.h) / 2 
+	
+		self:_spawnProjectile(Vector(e.x - xOff, e.y - yOff))
+	end
+
+end
 
 ------------------------------ Getters / Setters ------------------------------
 

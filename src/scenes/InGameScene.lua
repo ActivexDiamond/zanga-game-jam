@@ -16,8 +16,6 @@ function InGameScene:initialize(...)
 	PhysicsScene.initialize(self, ...)
 	GAME:getEventSystem():attach(self, EventSystem.ATTACH_TO_ALL)
 	
-	self.WIZARD = Wizard(self, 200, 200)
-	self:addObject(self.WIZARD)
 	self.currentLevel = nil
 	--Load stats
 	--Track stats, etc...
@@ -53,6 +51,5 @@ InGameScene[EvKeyPress] = function(self, e)
 end
 
 ------------------------------ Getters / Setters ------------------------------
-	
 
 return InGameScene
