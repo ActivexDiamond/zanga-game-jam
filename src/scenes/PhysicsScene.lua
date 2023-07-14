@@ -40,7 +40,7 @@ function PhysicsScene:update(dt)
 		if len > 0 then 
 			for k, col in ipairs(cols) do
 				if obj.onCollision then obj:onCollision(col.other, col) end
---				if col.other.onCollision then col.other:onCollision(obj) end
+				if col.other.onCollision then col.other:onCollision(obj, col) end
 			end	
 		end
 	end

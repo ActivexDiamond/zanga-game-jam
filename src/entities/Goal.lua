@@ -13,15 +13,18 @@ end
 
 ------------------------------ Core API ------------------------------
 function Goal:update(dt)
-	WorldObject.update(self, dt)
+	if self.complete then self.scene:gotoNextLevel() end
+end
+------------------------------ Physics ------------------------------
+function Goal:collisionFilter(other)
+	print(other.ID)
+	return other.ID == "projectile" and 'touch' or nil
 end
 
-
-function Goal:draw(g2d)
-	WorldObject.draw(self, g2d)
+function Goal:onCollision(other, info)
+	--Other should always be "projectile" due to the filter, but just to be safe.
+	if other.ID == "projectile" then self.complete = true end
 end
-
------------------------------- API ------------------------------
 
 
 ------------------------------ Getters / Setters ------------------------------
