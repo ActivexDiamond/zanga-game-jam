@@ -3,7 +3,6 @@ io.stdout:setvbuf('no')			--Fix for some terminals not flushing properly with Lu
 local lovebird = require "libs.lovebird"
 --Call update immediately to not miss any prints from the creation of objects or importing of files.
 lovebird:update()
-
 ------------------------------ Requires ------------------------------
 local version = require "cat-paw.version"
 
@@ -14,7 +13,8 @@ print("CatPaw:", version)
 DEBUG = {
 	ALLOW_QUICK_EXIT = true,
 	ALLOW_MOVEMENT = true,
-	DEV_MODE = true,
+	DEV_MODE = false,
+	MULTI_SHOT = true,
 	DRAW_LEVEL_OUTLINE = true,
 }
 
@@ -22,8 +22,8 @@ DEBUG = {
 local Game = require "core.Game"
 
 local GAME_NAME = "Spellcaster"
-local TARGET_WINDOW_W = 1080
-local TARGET_WINDOW_H = 720
+local TARGET_WINDOW_W = -1--1280
+local TARGET_WINDOW_H = -1--800
 
 Game(GAME_NAME, TARGET_WINDOW_W, TARGET_WINDOW_H)
 
