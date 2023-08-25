@@ -73,6 +73,24 @@ function EventSystem:_fire(eventInstance)
 end
 
 ------------------------------ API ------------------------------
+function EventSystem:detach(target)
+	for i = #self.rootSubscribers, 1, -1 do
+		if self.rootSubscribers[i] == target then
+			table.remove(self.rootSubscribers, i)
+		end
+	end
+	
+	for k, target in pairs(self.rootSubscribers) do
+	
+	end
+	
+	for e, subscriber in pairs(self.events) do
+		if subscriber == target then
+			self.events[e][target] = nil
+		end
+	end
+end
+
 EventSystem.attach = overload({
 	EventSystem, 'table', Event,
 	function(self, target, event)
