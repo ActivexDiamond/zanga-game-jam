@@ -37,7 +37,10 @@ function Object:setDepth(depth)
 	self.depth = depth;
 end
 
------------------------------- API ------------------------------
+------------------------------ Callbacks ------------------------------
+function Object:onRemove()
+--	GAME:getEventSystem():detach(self)	
+end
 
 ------------------------------ Getters / Setters ------------------------------
 
