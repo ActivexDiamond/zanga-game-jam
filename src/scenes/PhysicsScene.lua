@@ -135,12 +135,16 @@ function PhysicsScene:clearObjects(protection)
 		error("You seem to have passed something. Did you mean to call `Scene:removeObject(obj`)?"
 				.. "\nCareful, this clears the entire object buffer!")
 	end
-
+	
+	for obj, _ in pairs(self.objects) do
+		obj:onRemove()
+	end
+	
 	self.bumpWorld = bump.newWorld(32)
 	self.objects = {}
 	self.bumpWorld = bump.newWorld()
 	self.objectsToAdd = {}
-	self.objectsToRemove = {}
+	self.objectsToRemove = {}	
 end
 
 return PhysicsScene
