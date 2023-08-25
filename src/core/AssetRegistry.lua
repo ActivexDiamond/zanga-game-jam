@@ -83,6 +83,8 @@ function AssetRegistry:_fetchSpr(obj, w, h, objPath, storage)
 	local spr = storage[path] or self.MISSING_TEXTURE
 	if spr[0] and spr[0].typeOf and spr[0]:typeOf("Drawable") then
 		--Is animation
+		print('x', spr, obj)
+		print('y', spr[0], spr[1], spr[2])
 		local sprW, sprH = spr[obj.currentFrame]:getDimensions()
 		return spr, (w or obj.w)/sprW, (h or obj.h)/sprH
 	else

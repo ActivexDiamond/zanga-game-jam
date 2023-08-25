@@ -34,6 +34,7 @@ end
 
 ------------------------------ Core ------------------------------
 function AbstractGame:load(args)
+	
 end
 
 function AbstractGame:update(dt)

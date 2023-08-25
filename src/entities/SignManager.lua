@@ -13,7 +13,7 @@ function SignManager:initialize(scene, signs)
 	Object.initialize(self, "sign_manager")
 	self.scene = scene
 	self.signs = signs or {}
-	print("Spawned sign manager with " .. #self.signs .. "signs for this level.")
+	print("Spawned sign manager with " .. #self.signs .. " signs for this level.")
 end
 
 ------------------------------ Core API ------------------------------
