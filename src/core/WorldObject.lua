@@ -23,6 +23,8 @@ function WorldObject:initialize(id, scene, x, y)
 	
 	self.flipSpriteX = 1
 	self.flipSpriteY = 1
+
+	self:updateDrawingInfo()	
 end
 
 ------------------------------ Constants ------------------------------
@@ -39,21 +41,15 @@ function WorldObject:draw(g2d)
 		g2d.setColor(1, 1, 1, 1)
 	end
 
-	local spr, sx, sy
-	if self.useInvSpr then
-		spr, sx, sy = AssetRegistry:getSprInv(self)
-	else
-		spr, sx, sy = AssetRegistry:getSprObj(self)
-	end
 	local frame;
-	if spr[0] and spr[0].typeOf and spr[0]:typeOf("Drawable") then
-		frame = spr[self.currentFrame]
+	if self.spr[0] and self.spr[0].typeOf and self.spr[0]:typeOf("Drawable") then
+		frame = self.spr[self.currentFrame]
 	else
-		frame = spr
+		frame = self.spr
 	end
 
-	sx = sx * self.flipSpriteX
-	sy = sy * self.flipSpriteY
+	local sx = self.sx * self.flipSpriteX
+	local sy = self.sy * self.flipSpriteY
 	local x = self.position.x + self.w * self.spriteOffset.x
 	local y = self.position.y + self.h * self.spriteOffset.y
 	local ox = frame:getWidth() * self.spriteOffset.x 
@@ -68,8 +64,19 @@ function WorldObject:draw(g2d)
 	g2d.setColor(1, 1, 1, 1)
 end
 
------------------------------- API ------------------------------
+------------------------------ Internals ------------------------------
+-- Can be called with no args (if used in `init`, info was updated elsewhere, etc...
+function WorldObject:updateDrawingInfo(w, h, useInvSpr)
+	self.w = w or self.w
+	self.h = h or self.h
+	self.useInvSpr = useInvSpr or self.useInvSpr
 
+	if self.useInvSpr then
+		self.spr, self.sx, self.sy = AssetRegistry:getSprInv(self)
+	else
+		self.spr, self.sx, self.sy = AssetRegistry:getSprObj(self)
+	end
+end
 
 ------------------------------ Getters / Setters ------------------------------
 function WorldObject:getPosition() return self.position end
