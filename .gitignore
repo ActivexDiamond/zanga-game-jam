@@ -1,6 +1,8 @@
 ## General that I use in most of my projects.
 #This one is usually flooded with many web builds, no need to sync all of that.
-releases/auto/
+/releases/auto/
+#Mostly a manual local thing.
+/backups/
 
 # Temporary Files
 *~
